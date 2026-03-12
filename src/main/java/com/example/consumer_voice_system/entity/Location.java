@@ -4,20 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Location {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     
-    private String provinceName;
-    private String provinceCode;
-    private String district;
-    private String sector;
-    private String cell;
-    private String village;
+    private String name;
+    private String code;
+    private String level; // PROVINCE, DISTRICT, SECTOR, CELL, VILLAGE
+    
+    // Self-referencing relationship (parent_id)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id")
+    private Location parent;
+    
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Location> children = new ArrayList<>();
     
     // One Location has many Users (One-to-Many)
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
@@ -28,70 +35,59 @@ public class Location {
     public Location() {
     }
     
-    public Location(String provinceName, String provinceCode, String district, String sector, String cell, String village) {
-        this.provinceName = provinceName;
-        this.provinceCode = provinceCode;
-        this.district = district;
-        this.sector = sector;
-        this.cell = cell;
-        this.village = village;
+    public Location(String name, String code, String level) {
+        this.name = name;
+        this.code = code;
+        this.level = level;
     }
     
     // Getters and Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
     
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
     
-    public String getProvinceName() {
-        return provinceName;
+    public String getName() {
+        return name;
     }
     
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
+    public void setName(String name) {
+        this.name = name;
     }
     
-    public String getProvinceCode() {
-        return provinceCode;
+    public String getCode() {
+        return code;
     }
     
-    public void setProvinceCode(String provinceCode) {
-        this.provinceCode = provinceCode;
+    public void setCode(String code) {
+        this.code = code;
     }
     
-    public String getDistrict() {
-        return district;
+    public String getLevel() {
+        return level;
     }
     
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setLevel(String level) {
+        this.level = level;
     }
     
-    public String getSector() {
-        return sector;
+    public Location getParent() {
+        return parent;
     }
     
-    public void setSector(String sector) {
-        this.sector = sector;
+    public void setParent(Location parent) {
+        this.parent = parent;
     }
     
-    public String getCell() {
-        return cell;
+    public List<Location> getChildren() {
+        return children;
     }
     
-    public void setCell(String cell) {
-        this.cell = cell;
-    }
-    
-    public String getVillage() {
-        return village;
-    }
-    
-    public void setVillage(String village) {
-        this.village = village;
+    public void setChildren(List<Location> children) {
+        this.children = children;
     }
     
     public List<User> getUsers() {

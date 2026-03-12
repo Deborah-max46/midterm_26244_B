@@ -21,8 +21,8 @@ public class User {
     private String password;
     
     // Many Users belong to one Location (Many-to-One)
-    @ManyToOne
-    @JoinColumn(name = "location_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
     
     // One User has one UserProfile (One-to-One)

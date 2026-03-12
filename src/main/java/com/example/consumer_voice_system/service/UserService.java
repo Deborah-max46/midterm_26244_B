@@ -1,6 +1,10 @@
 package com.example.consumer_voice_system.service;
 
+import com.example.consumer_voice_system.dto.UserCreateRequest;
+import com.example.consumer_voice_system.entity.Location;
+import com.example.consumer_voice_system.entity.LocationLevel;
 import com.example.consumer_voice_system.entity.User;
+import com.example.consumer_voice_system.repository.LocationRepository;
 import com.example.consumer_voice_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +16,43 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private LocationRepository locationRepository;
+    
     // Save user
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+    
+    // Create user with location code or name
+    public User createUser(UserCreateRequest request) {
+        Location location = null;
+        
+        // Try to find location by code first
+        if (request.getLocationCode() != null && !request.getLocationCode().isEmpty()) {
+            location = locationRepository.findByCode(request.getLocationCode()).orElse(null);
+            System.out.println("Found location by code: " + (location != null ? location.getId() + " - " + location.getName() : "NULL"));
+        }
+        
+        // If not found by code, try by name
+        if (location == null && request.getLocationName() != null && !request.getLocationName().isEmpty()) {
+            location = locationRepository.findByName(request.getLocationName()).orElse(null);
+            System.out.println("Found location by name: " + (location != null ? location.getId() + " - " + location.getName() : "NULL"));
+        }
+        
+        if (location == null) {
+            throw new RuntimeException("Location not found with code: " + request.getLocationCode() + " or name: " + request.getLocationName());
+        }
+        
+        // Create user
+        User user = new User(request.getFullName(), request.getEmail(), request.getPassword());
+        user.setLocation(location);
+        System.out.println("Setting location for user: " + user.getEmail() + " -> Location ID: " + location.getId());
+        
+        User savedUser = userRepository.save(user);
+        System.out.println("Saved user with location_id: " + (savedUser.getLocation() != null ? savedUser.getLocation().getId() : "NULL"));
+        
+        return savedUser;
     }
     
     // Get all users
@@ -34,11 +72,11 @@ public class UserService {
     
     // Get users by province name
     public List<User> getUsersByProvinceName(String provinceName) {
-        return userRepository.findByLocationProvinceName(provinceName);
+        return userRepository.findByLocationNameAndLocationLevel(provinceName, LocationLevel.PROVINCE);
     }
     
     // Get users by province code
     public List<User> getUsersByProvinceCode(String provinceCode) {
-        return userRepository.findByLocationProvinceCode(provinceCode);
+        return userRepository.findByLocationCodeAndLocationLevel(provinceCode, LocationLevel.PROVINCE);
     }
 }

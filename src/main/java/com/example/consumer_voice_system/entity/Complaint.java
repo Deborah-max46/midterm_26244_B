@@ -15,7 +15,14 @@ public class Complaint {
     
     private String title;
     private String description;
+    
+    @Column(updatable = false)
     private LocalDate submissionDate;
+    
+    @PrePersist
+    protected void onCreate() {
+        submissionDate = LocalDate.now();
+    }
     
     // Many Complaints belong to one User (Many-to-One)
     @ManyToOne
@@ -40,10 +47,9 @@ public class Complaint {
     public Complaint() {
     }
     
-    public Complaint(String title, String description, LocalDate submissionDate) {
+    public Complaint(String title, String description) {
         this.title = title;
         this.description = description;
-        this.submissionDate = submissionDate;
     }
     
     // Getters and Setters

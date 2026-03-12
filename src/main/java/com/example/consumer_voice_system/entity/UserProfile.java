@@ -11,7 +11,6 @@ public class UserProfile {
     
     private String phoneNumber;
     private String nationalId;
-    private String address;
     
     // One-to-One with User
     @OneToOne
@@ -22,10 +21,9 @@ public class UserProfile {
     public UserProfile() {
     }
     
-    public UserProfile(String phoneNumber, String nationalId, String address) {
+    public UserProfile(String phoneNumber, String nationalId) {
         this.phoneNumber = phoneNumber;
         this.nationalId = nationalId;
-        this.address = address;
     }
     
     // Getters and Setters
@@ -51,14 +49,6 @@ public class UserProfile {
     
     public void setNationalId(String nationalId) {
         this.nationalId = nationalId;
-    }
-    
-    public String getAddress() {
-        return address;
-    }
-    
-    public void setAddress(String address) {
-        this.address = address;
     }
     
     public User getUser() {

@@ -1,5 +1,6 @@
 package com.example.consumer_voice_system.controller;
 
+import com.example.consumer_voice_system.dto.UserCreateRequest;
 import com.example.consumer_voice_system.entity.User;
 import com.example.consumer_voice_system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,10 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    // Create user
+    // Create user with location code or name
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
+    public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
+        User savedUser = userService.createUser(request);
         return ResponseEntity.ok(savedUser);
     }
     
