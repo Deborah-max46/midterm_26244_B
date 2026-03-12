@@ -1,0 +1,14 @@
+package com.example.consumer_voice_system.repository;
+
+import com.example.consumer_voice_system.entity.Complaint;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
+    
+    // Requirement: Implement pagination and sorting using Pageable
+    Page<Complaint> findAll(Pageable pageable);
+}
