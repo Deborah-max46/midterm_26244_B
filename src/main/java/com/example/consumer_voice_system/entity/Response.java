@@ -1,5 +1,6 @@
 package com.example.consumer_voice_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -11,25 +12,33 @@ public class Response {
     private Long id;
     
     private String message;
+    
+    @Column(updatable = false)
     private LocalDate responseDate;
+    
+    @PrePersist
+    protected void onCreate() {
+        responseDate = LocalDate.now();
+    }
     
     // Many Responses belong to one Complaint (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "complaint_id")
+    @JsonIgnore
     private Complaint complaint;
     
     // Many Responses belong to one User (official) (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "official_id")
+    @JsonIgnore
     private User official;
     
     // Constructors
     public Response() {
     }
     
-    public Response(String message, LocalDate responseDate) {
+    public Response(String message) {
         this.message = message;
-        this.responseDate = responseDate;
     }
     
     // Getters and Setters

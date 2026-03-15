@@ -7,7 +7,6 @@ import com.example.consumer_voice_system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 @Component
@@ -137,15 +136,15 @@ public class DataLoader implements CommandLineRunner {
         complaintRepository.saveAll(Arrays.asList(complaint1, complaint2, complaint3, complaint4));
         
         // 6. Create Responses
-        Response response1 = new Response("We are working on fixing the water issue. Expected resolution in 2 days.", LocalDate.of(2024, 1, 16));
+        Response response1 = new Response("We are working on fixing the water issue. Expected resolution in 2 days.");
         response1.setComplaint(complaint1);
         response1.setOfficial(official);
         
-        Response response2 = new Response("Electricity team has been dispatched to investigate.", LocalDate.of(2024, 1, 17));
+        Response response2 = new Response("Electricity team has been dispatched to investigate.");
         response2.setComplaint(complaint2);
         response2.setOfficial(official);
         
-        Response response3 = new Response("Road maintenance scheduled for next week.", LocalDate.of(2024, 1, 19));
+        Response response3 = new Response("Road maintenance scheduled for next week.");
         response3.setComplaint(complaint3);
         response3.setOfficial(official);
         
