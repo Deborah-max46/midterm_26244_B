@@ -28,31 +28,22 @@ public class UserService {
     public User createUser(UserCreateRequest request) {
         Location location = null;
         
-        // Try to find location by code first
         if (request.getLocationCode() != null && !request.getLocationCode().isEmpty()) {
             location = locationRepository.findByCode(request.getLocationCode()).orElse(null);
-            System.out.println("Found location by code: " + (location != null ? location.getId() + " - " + location.getName() : "NULL"));
         }
         
-        // If not found by code, try by name
         if (location == null && request.getLocationName() != null && !request.getLocationName().isEmpty()) {
             location = locationRepository.findByName(request.getLocationName()).orElse(null);
-            System.out.println("Found location by name: " + (location != null ? location.getId() + " - " + location.getName() : "NULL"));
         }
         
         if (location == null) {
             throw new RuntimeException("Location not found with code: " + request.getLocationCode() + " or name: " + request.getLocationName());
         }
         
-        // Create user
         User user = new User(request.getFullName(), request.getEmail(), request.getPassword());
         user.setLocation(location);
-        System.out.println("Setting location for user: " + user.getEmail() + " -> Location ID: " + location.getId());
         
-        User savedUser = userRepository.save(user);
-        System.out.println("Saved user with location_id: " + (savedUser.getLocation() != null ? savedUser.getLocation().getId() : "NULL"));
-        
-        return savedUser;
+        return userRepository.save(user);
     }
     
     // Get all users
